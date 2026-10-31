@@ -15,10 +15,12 @@ class OllamaClient:
         model: str = "llama3.2:3b",
         base_url: str = "http://localhost:11434",
         timeout_seconds: float = 60.0,
+        temperature: float = 0.0,
     ) -> None:
         self.model = model
         self.base_url = base_url.rstrip("/")
         self.timeout_seconds = timeout_seconds
+        self.temperature = temperature
 
     def generate(self, prompt: str) -> str:
         """Return Ollama's generated text for one prompt."""
@@ -26,7 +28,12 @@ class OllamaClient:
             raise ValueError("Prompt must not be blank.")
 
         body = json.dumps(
-            {"model": self.model, "prompt": prompt, "stream": False}
+            {
+                "model": self.model,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": self.temperature},
+            }
         ).encode("utf-8")
         request = Request(
             f"{self.base_url}/api/generate",

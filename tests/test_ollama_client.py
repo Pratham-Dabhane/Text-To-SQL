@@ -37,6 +37,7 @@ def test_generate_posts_model_and_prompt(monkeypatch):
         "model": "llama3.2:3b",
         "prompt": "Return SQL only.",
         "stream": False,
+        "options": {"temperature": 0.0},
     }
 
 

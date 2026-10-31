@@ -39,17 +39,27 @@ def evaluate_model(
     results = []
 
     for case in cases:
+        generated = None
         try:
             prompt = build_sql_generation_prompt(case["question"], schema_text)
             generated = model_client.generate(prompt)
-            correct = score_generated_sql(
-                case,
-                generated,
-                lambda sql: execute_read_only(engine, sql),
-            )
-            results.append({"id": case["id"], "correct": correct})
+            cleaned = clean_generated_sql(generated)
+            validated = validate_read_only_sql(cleaned)
+            output = execute_read_only(engine, validated)
+            correct = rows_match(output["rows"], output["columns"], case["expected_rows"])
+            results.append({
+                "id": case["id"],
+                "correct": correct,
+                "generated_sql": generated,
+                "validated_sql": validated,
+            })
         except Exception as exc:  # Record failures as incorrect, never hide them.
-            results.append({"id": case["id"], "correct": False, "error": str(exc)})
+            results.append({
+                "id": case["id"],
+                "correct": False,
+                "generated_sql": generated if "generated" in locals() else None,
+                "error": str(exc),
+            })
 
     correct_count = sum(result["correct"] for result in results)
     return {
