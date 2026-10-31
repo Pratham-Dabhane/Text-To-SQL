@@ -1,0 +1,2 @@
+-- Write your ten SELECT queries here. Keep them in the order in
+-- exercises/phase1_queries.md so they are easy to review together.
