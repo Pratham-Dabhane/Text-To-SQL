@@ -1,0 +1,62 @@
+[
+  {
+    "id": "q01",
+    "question": "List every customer ordered by name.",
+    "sql": "SELECT full_name FROM customers ORDER BY full_name",
+    "expected_rows": [["Asha Patel"], ["Kabir Rao"], ["Leela Nair"], ["Mina Das"], ["Noah Sen"], ["Ravi Shah"]]
+  },
+  {
+    "id": "q02",
+    "question": "How many customers are from Mumbai?",
+    "sql": "SELECT COUNT(*) FROM customers WHERE city = 'Mumbai'",
+    "expected_rows": [[2]]
+  },
+  {
+    "id": "q03",
+    "question": "Show each order with the customer's name.",
+    "sql": "SELECT o.order_id, c.full_name FROM orders o JOIN customers c ON c.customer_id = o.customer_id ORDER BY o.order_id",
+    "expected_rows": [[1, "Asha Patel"], [2, "Asha Patel"], [3, "Ravi Shah"], [4, "Ravi Shah"], [5, "Mina Das"], [6, "Mina Das"], [7, "Kabir Rao"], [8, "Kabir Rao"], [9, "Leela Nair"], [10, "Noah Sen"], [11, "Noah Sen"]]
+  },
+  {
+    "id": "q04",
+    "question": "Which products are in Stationery?",
+    "sql": "SELECT product_name FROM products WHERE category = 'Stationery' ORDER BY product_name",
+    "expected_rows": [["Notebook"], ["Pen Set"]]
+  },
+  {
+    "id": "q05",
+    "question": "What is the delivered revenue for each product?",
+    "sql": "SELECT p.product_name, COALESCE(SUM(o.quantity * p.unit_price), 0) AS revenue FROM products p LEFT JOIN orders o ON o.product_id = p.product_id AND o.status = 'delivered' GROUP BY p.product_name ORDER BY p.product_name",
+    "expected_rows": [["Backpack", 0], ["Desk Lamp", 56.0], ["Notebook", 45.0], ["Pen Set", 33.0], ["Water Bottle", 33.5]]
+  },
+  {
+    "id": "q06",
+    "question": "What is delivered revenue by customer?",
+    "sql": "SELECT c.full_name, SUM(o.quantity * p.unit_price) AS revenue FROM customers c JOIN orders o ON o.customer_id = c.customer_id JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered' GROUP BY c.full_name ORDER BY c.full_name",
+    "expected_rows": [["Asha Patel", 13.5], ["Kabir Rao", 56.0], ["Leela Nair", 33.0], ["Mina Das", 22.5], ["Noah Sen", 9.0], ["Ravi Shah", 33.5]]
+  },
+  {
+    "id": "q07",
+    "question": "How many orders does each customer have?",
+    "sql": "SELECT c.full_name, COUNT(o.order_id) FROM customers c LEFT JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.full_name ORDER BY c.full_name",
+    "expected_rows": [["Asha Patel", 2], ["Kabir Rao", 2], ["Leela Nair", 1], ["Mina Das", 2], ["Noah Sen", 2], ["Ravi Shah", 2]]
+  },
+  {
+    "id": "q08",
+    "question": "What is the total delivered revenue?",
+    "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered'",
+    "expected_rows": [[167.5]]
+  },
+  {
+    "id": "q09",
+    "question": "Which orders are still pending?",
+    "sql": "SELECT order_id FROM orders WHERE status = 'pending' ORDER BY order_id",
+    "expected_rows": [[6], [10]]
+  },
+  {
+    "id": "q10",
+    "question": "What is the most expensive product?",
+    "sql": "SELECT product_name, unit_price FROM products ORDER BY unit_price DESC LIMIT 1",
+    "expected_rows": [["Backpack", 42.0]]
+  }
+]
