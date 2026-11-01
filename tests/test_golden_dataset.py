@@ -20,5 +20,5 @@ def test_holdout_dataset_has_unseen_cases():
     path = Path(__file__).parents[1] / "eval" / "holdout_questions.json"
     cases = json.loads(path.read_text(encoding="utf-8"))
 
-    assert len(cases) == 10
-    assert len({case["id"] for case in cases}) == 10
+    assert len(cases) == 20
+    assert len({case["id"] for case in cases}) == 20
