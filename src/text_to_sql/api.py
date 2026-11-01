@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -21,6 +22,11 @@ from text_to_sql.question_router import route_question
 
 class QueryRequest(BaseModel):
     question: str
+
+
+class FeedbackRequest(BaseModel):
+    query_id: str
+    is_correct: bool
 
 
 def create_app(engine: Engine | None = None, client: OllamaClient | None = None) -> FastAPI:
@@ -46,12 +52,21 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None)
     def get_history():
         return {"items": history}
 
+    @app.post("/v1/feedback")
+    def submit_feedback(request: FeedbackRequest):
+        item = next((entry for entry in history if entry["query_id"] == request.query_id), None)
+        if item is None:
+            raise HTTPException(404, "Query was not found in this session.")
+        item["feedback"] = "correct" if request.is_correct else "incorrect"
+        return {"query_id": request.query_id, "feedback": item["feedback"]}
+
     @app.post("/v1/query")
     def query(request: QueryRequest):
         early_decision = route_question(request.question)
         if early_decision["action"] != "generate_sql":
-            history.append({"question": request.question, **early_decision})
-            return early_decision
+            response = {"query_id": str(uuid4()), **early_decision}
+            history.append({"question": request.question, **response})
+            return response
 
         try:
             database_engine = get_engine()
@@ -60,7 +75,12 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None)
             generated = model_client.generate(prepared["prompt"])
             sql = validate_read_only_sql(clean_generated_sql(generated))
             result = execute_read_only(database_engine, sql)
-            response = {"action": "executed", "generated_sql": sql, "result": result}
+            response = {
+                "query_id": str(uuid4()),
+                "action": "executed",
+                "generated_sql": sql,
+                "result": result,
+            }
             history.append({"question": request.question, **response})
             return response
         except ValueError as exc:

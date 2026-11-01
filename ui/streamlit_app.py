@@ -32,8 +32,25 @@ if st.button("Run query", type="primary") and question.strip():
             st.dataframe(result["rows"], use_container_width=True)
             for warning in result["sanity"]["warnings"]:
                 st.warning(warning)
+            st.session_state["last_query_id"] = payload["query_id"]
     except requests.RequestException as exc:
         st.error(f"API request failed: {exc}")
+
+if st.session_state.get("last_query_id"):
+    st.caption("Was this result correct?")
+    yes_col, no_col = st.columns(2)
+    for column, label, value in ((yes_col, "Correct", True), (no_col, "Incorrect", False)):
+        if column.button(label):
+            try:
+                feedback = requests.post(
+                    f"{API_URL}/v1/feedback",
+                    json={"query_id": st.session_state["last_query_id"], "is_correct": value},
+                    timeout=10,
+                )
+                feedback.raise_for_status()
+                st.success("Feedback saved.")
+            except requests.RequestException as exc:
+                st.error(f"Could not save feedback: {exc}")
 
 if st.checkbox("Show query history"):
     try:
