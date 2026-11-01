@@ -31,6 +31,7 @@ Select exactly the fields requested. Distinguish product_name from category:
 category is a products column and values such as 'Stationery' belong in
 filters on products.category. Use the requested aggregate and preserve the
 requested level of detail. Return SQL only.
+Do not add LIMIT unless the question asks for one/top/bottom result or a row limit.
 Use only tables and columns listed in the schema.
 Do not use INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, or multiple statements.
 
