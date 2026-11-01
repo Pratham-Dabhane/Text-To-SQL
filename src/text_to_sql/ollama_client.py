@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -13,12 +14,12 @@ class OllamaClient:
     def __init__(
         self,
         model: str = "llama3.2:3b",
-        base_url: str = "http://localhost:11434",
+        base_url: str | None = None,
         timeout_seconds: float = 60.0,
         temperature: float = 0.0,
     ) -> None:
         self.model = model
-        self.base_url = base_url.rstrip("/")
+        self.base_url = (base_url or os.getenv("OLLAMA_URL", "http://localhost:11434")).rstrip("/")
         self.timeout_seconds = timeout_seconds
         self.temperature = temperature
 

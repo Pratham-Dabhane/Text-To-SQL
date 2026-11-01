@@ -65,6 +65,10 @@ PostgreSQL is intentionally not published to Windows; the API reaches it
 internally at `postgres:5432`. This avoids conflicts with a local PostgreSQL
 installation.
 
+The Docker API reaches Ollama on Windows through
+`host.docker.internal:11434`. Start Ollama before sending generated-query
+requests.
+
 Terminal 1:
 
 ```powershell
