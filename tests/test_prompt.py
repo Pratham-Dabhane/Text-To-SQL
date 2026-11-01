@@ -15,6 +15,8 @@ def test_prompt_includes_question_schema_and_rules():
     assert "Return SQL only." in prompt
     assert "Do not use INSERT" in prompt
     assert "What is delivered revenue for each product?" in prompt
+    assert "Select exactly the fields requested." in prompt
+    assert "Distinguish product_name from category" in prompt
 
 
 @pytest.mark.parametrize("question,schema_text", [("", "TABLE customers"), ("List customers", "")])
