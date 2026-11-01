@@ -1,0 +1,20 @@
+[
+  {
+    "id": "c01",
+    "question": "What is our revenue?",
+    "expected_action": "clarify",
+    "reason": "Revenue could mean all orders or delivered orders."
+  },
+  {
+    "id": "c02",
+    "question": "Which customers are most valuable?",
+    "expected_action": "clarify",
+    "reason": "The ranking metric is not specified."
+  },
+  {
+    "id": "c03",
+    "question": "What was our profit last month?",
+    "expected_action": "refuse_unanswerable",
+    "reason": "The schema has no profit or cost data."
+  }
+]

@@ -28,6 +28,11 @@ def rows_match(actual: list[dict[str, Any]], columns: list[str], expected: list[
     return actual_rows == [[_normalise(value) for value in row] for row in expected]
 
 
+def result_shape_matches(columns: list[str], expected: list[list[Any]]) -> bool:
+    """Check the deterministic number of returned columns."""
+    return not expected or len(columns) == len(expected[0])
+
+
 def evaluate_dataset(engine: Engine, dataset_path: str | Path) -> dict[str, Any]:
     cases = json.loads(Path(dataset_path).read_text(encoding="utf-8"))
     results = []

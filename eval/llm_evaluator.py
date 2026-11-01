@@ -8,7 +8,8 @@ from typing import Any, Callable
 
 from sqlalchemy.engine import Engine
 
-from eval.evaluator import rows_match
+from eval.evaluator import result_shape_matches, rows_match
+from text_to_sql.alignment import judge_alignment
 from text_to_sql.execution import execute_read_only
 from text_to_sql.ollama_client import OllamaClient
 from text_to_sql.prompt import build_sql_generation_prompt
@@ -32,6 +33,7 @@ def evaluate_model(
     engine: Engine,
     dataset_path: str | Path,
     client: OllamaClient | None = None,
+    include_alignment: bool = False,
 ) -> dict[str, Any]:
     cases = json.loads(Path(dataset_path).read_text(encoding="utf-8"))
     schema_text = format_schema_for_prompt(inspect_schema(engine))
@@ -47,12 +49,23 @@ def evaluate_model(
             validated = validate_read_only_sql(cleaned)
             output = execute_read_only(engine, validated)
             correct = rows_match(output["rows"], output["columns"], case["expected_rows"])
-            results.append({
+            result_record = {
                 "id": case["id"],
                 "correct": correct,
+                "result_shape_ok": result_shape_matches(
+                    output["columns"], case["expected_rows"]
+                ),
                 "generated_sql": generated,
                 "validated_sql": validated,
-            })
+            }
+            if include_alignment:
+                try:
+                    result_record["alignment"] = judge_alignment(
+                        case["question"], validated, model_client
+                    )
+                except Exception as alignment_error:
+                    result_record["alignment_error"] = str(alignment_error)
+            results.append(result_record)
         except Exception as exc:  # Record failures as incorrect, never hide them.
             results.append({
                 "id": case["id"],
