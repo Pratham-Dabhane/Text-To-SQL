@@ -26,6 +26,11 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     volumes:
       - history_data:/app/data
     depends_on:
@@ -40,7 +45,8 @@ services:
     ports:
       - "8501:8501"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
 volumes:
   postgres_data:
