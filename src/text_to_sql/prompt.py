@@ -15,7 +15,10 @@ Question: How many customers are from Mumbai?
 SQL: SELECT COUNT(*) FROM customers WHERE city = 'Mumbai'
 
 Question: What is delivered revenue for each product?
-SQL: SELECT p.product_name, COALESCE(SUM(o.quantity * p.unit_price), 0) AS revenue FROM products p LEFT JOIN orders o ON o.product_id = p.product_id AND o.status = 'delivered' GROUP BY p.product_name ORDER BY p.product_name"""
+SQL: SELECT p.product_name, COALESCE(SUM(o.quantity * p.unit_price), 0) AS revenue FROM products p LEFT JOIN orders o ON o.product_id = p.product_id AND o.status = 'delivered' GROUP BY p.product_name ORDER BY p.product_name
+
+Question: For each customer, return the customer's name and count of orders.
+SQL: SELECT c.full_name, COUNT(o.order_id) AS order_count FROM customers c LEFT JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.full_name ORDER BY c.full_name"""
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Use only tables and columns listed in the schema. Return SQL only.

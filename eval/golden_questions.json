@@ -13,7 +13,7 @@
   },
   {
     "id": "q03",
-    "question": "Show each order with the customer's name.",
+    "question": "For each order, return only the order ID and the customer's name.",
     "sql": "SELECT o.order_id, c.full_name FROM orders o JOIN customers c ON c.customer_id = o.customer_id ORDER BY o.order_id",
     "expected_rows": [[1, "Asha Patel"], [2, "Asha Patel"], [3, "Ravi Shah"], [4, "Ravi Shah"], [5, "Mina Das"], [6, "Mina Das"], [7, "Kabir Rao"], [8, "Kabir Rao"], [9, "Leela Nair"], [10, "Noah Sen"], [11, "Noah Sen"]]
   },
@@ -31,13 +31,13 @@
   },
   {
     "id": "q06",
-    "question": "What is delivered revenue by customer?",
+    "question": "For each customer, return the customer's name and delivered revenue.",
     "sql": "SELECT c.full_name, SUM(o.quantity * p.unit_price) AS revenue FROM customers c JOIN orders o ON o.customer_id = c.customer_id JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered' GROUP BY c.full_name ORDER BY c.full_name",
     "expected_rows": [["Asha Patel", 13.5], ["Kabir Rao", 56.0], ["Leela Nair", 33.0], ["Mina Das", 22.5], ["Noah Sen", 9.0], ["Ravi Shah", 33.5]]
   },
   {
     "id": "q07",
-    "question": "How many orders does each customer have?",
+    "question": "For each customer, return the customer's name and count of orders, including customers with zero orders, ordered by customer name.",
     "sql": "SELECT c.full_name, COUNT(o.order_id) FROM customers c LEFT JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.full_name ORDER BY c.full_name",
     "expected_rows": [["Asha Patel", 2], ["Kabir Rao", 2], ["Leela Nair", 1], ["Mina Das", 2], ["Noah Sen", 2], ["Ravi Shah", 2]]
   },
@@ -49,7 +49,7 @@
   },
   {
     "id": "q09",
-    "question": "Which orders are still pending?",
+    "question": "Return only the order IDs for orders that are still pending.",
     "sql": "SELECT order_id FROM orders WHERE status = 'pending' ORDER BY order_id",
     "expected_rows": [[6], [10]]
   },
