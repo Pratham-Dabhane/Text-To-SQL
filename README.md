@@ -79,6 +79,10 @@ The latest measured model results were 10/10 on the 10-question golden set and
 10/10 on the 10-question holdout set. These are measurements for this small
 local dataset and model configuration, not general production accuracy claims.
 
+API history and feedback are stored in `data/history.sqlite3` by default. Set
+`HISTORY_DB_PATH` to choose another local path. This store is separate from the
+PostgreSQL connection used for generated queries, which remains read-only.
+
 ## Safety design
 
 - SQLGlot rejects malformed, multi-statement, DDL, and DML SQL.
@@ -90,7 +94,7 @@ local dataset and model configuration, not general production accuracy claims.
 
 ## Known limitations
 
-The project does not yet provide a production persistence layer for history,
-user authentication, Docker Compose deployment, a 50+ case evaluation suite,
+The project does not yet provide user authentication, Docker Compose deployment,
+a 50+ case evaluation suite,
 or a validated hallucination-detection metric. LLM alignment judgments are
 review signals and are not probabilities or proof of correctness.

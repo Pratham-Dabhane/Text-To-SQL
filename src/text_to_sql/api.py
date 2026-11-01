@@ -18,6 +18,7 @@ from text_to_sql.sql_response import clean_generated_sql
 from text_to_sql.sql_validation import validate_read_only_sql
 from text_to_sql.query_pipeline import prepare_query
 from text_to_sql.question_router import route_question
+from text_to_sql.history_store import HistoryStore
 
 
 class QueryRequest(BaseModel):
@@ -29,11 +30,11 @@ class FeedbackRequest(BaseModel):
     is_correct: bool
 
 
-def create_app(engine: Engine | None = None, client: OllamaClient | None = None) -> FastAPI:
+def create_app(engine: Engine | None = None, client: OllamaClient | None = None, history_store: HistoryStore | None = None) -> FastAPI:
     app = FastAPI(title="Safe Text-to-SQL")
     database_engine = engine
     model_client = client or OllamaClient()
-    history: list[dict[str, object]] = []
+    store = history_store or HistoryStore(os.getenv("HISTORY_DB_PATH", "data/history.sqlite3"))
 
     def get_engine() -> Engine:
         nonlocal database_engine
@@ -50,22 +51,21 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None)
 
     @app.get("/v1/history")
     def get_history():
-        return {"items": history}
+        return {"items": store.list()}
 
     @app.post("/v1/feedback")
     def submit_feedback(request: FeedbackRequest):
-        item = next((entry for entry in history if entry["query_id"] == request.query_id), None)
-        if item is None:
+        feedback = "correct" if request.is_correct else "incorrect"
+        if not store.add_feedback(request.query_id, feedback):
             raise HTTPException(404, "Query was not found in this session.")
-        item["feedback"] = "correct" if request.is_correct else "incorrect"
-        return {"query_id": request.query_id, "feedback": item["feedback"]}
+        return {"query_id": request.query_id, "feedback": feedback}
 
     @app.post("/v1/query")
     def query(request: QueryRequest):
         early_decision = route_question(request.question)
         if early_decision["action"] != "generate_sql":
             response = {"query_id": str(uuid4()), **early_decision}
-            history.append({"question": request.question, **response})
+            store.add(response["query_id"], request.question, response)
             return response
 
         try:
@@ -81,7 +81,7 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None)
                 "generated_sql": sql,
                 "result": result,
             }
-            history.append({"question": request.question, **response})
+            store.add(response["query_id"], request.question, response)
             return response
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
