@@ -61,6 +61,10 @@ Then open `http://localhost:8501`. The compose example uses development-only
 passwords; change them before using any shared or public environment. To stop
 the stack, run `docker compose down`.
 
+PostgreSQL is intentionally not published to Windows; the API reaches it
+internally at `postgres:5432`. This avoids conflicts with a local PostgreSQL
+installation.
+
 Terminal 1:
 
 ```powershell
