@@ -28,5 +28,35 @@
     "question": "How many orders were placed between July 1 and July 10, 2025 inclusive?",
     "sql": "SELECT COUNT(*) FROM orders WHERE ordered_at >= DATE '2025-07-01' AND ordered_at < DATE '2025-07-11'",
     "expected_rows": [[5]]
+  },
+  {
+    "id": "h06",
+    "question": "How many orders have shipped?",
+    "sql": "SELECT COUNT(*) FROM orders WHERE status = 'shipped'",
+    "expected_rows": [[2]]
+  },
+  {
+    "id": "h07",
+    "question": "What is the total value of all orders?",
+    "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON o.product_id = p.product_id",
+    "expected_rows": [[346.5]]
+  },
+  {
+    "id": "h08",
+    "question": "Which product has the lowest unit price? Return its name and price.",
+    "sql": "SELECT product_name, unit_price FROM products ORDER BY unit_price LIMIT 1",
+    "expected_rows": [["Notebook", 4.5]]
+  },
+  {
+    "id": "h09",
+    "question": "Return only the names of customers created on or after April 1, 2025, ordered by creation date.",
+    "sql": "SELECT full_name FROM customers WHERE created_at >= DATE '2025-04-01' ORDER BY created_at",
+    "expected_rows": [["Kabir Rao"], ["Leela Nair"], ["Noah Sen"]]
+  },
+  {
+    "id": "h10",
+    "question": "What is the average quantity per delivered order?",
+    "sql": "SELECT AVG(quantity) FROM orders WHERE status = 'delivered'",
+    "expected_rows": [[3.0]]
   }
 ]
