@@ -51,6 +51,16 @@ Create the SELECT-only database role using [db/readonly_role_setup.md](db/readon
 
 ## Run the application
 
+For a reproducible local stack, install Docker Desktop and run:
+
+```powershell
+docker compose up --build
+```
+
+Then open `http://localhost:8501`. The compose example uses development-only
+passwords; change them before using any shared or public environment. To stop
+the stack, run `docker compose down`.
+
 Terminal 1:
 
 ```powershell

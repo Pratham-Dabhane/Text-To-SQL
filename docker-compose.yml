@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: text_to_sql_learning
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/docker-init:/docker-entrypoint-initdb.d:ro
+      - ./db:/workspace-db:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d text_to_sql_learning"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    command: uvicorn text_to_sql.api:app --host 0.0.0.0 --port 8000
+    environment:
+      DATABASE_URL: postgresql+psycopg://text_to_sql_reader:reader_dev_password@postgres:5432/text_to_sql_learning
+      HISTORY_DB_PATH: /app/data/history.sqlite3
+    ports:
+      - "8000:8000"
+    volumes:
+      - history_data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  streamlit:
+    build: .
+    command: streamlit run ui/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  history_data:
