@@ -1,0 +1,32 @@
+[
+  {
+    "id": "h01",
+    "question": "Return the IDs and dates of delivered orders, newest first.",
+    "sql": "SELECT order_id, ordered_at FROM orders WHERE status = 'delivered' ORDER BY ordered_at DESC",
+    "expected_rows": [[11, "2025-07-24"], [9, "2025-07-20"], [7, "2025-07-15"], [5, "2025-07-10"], [3, "2025-07-04"], [1, "2025-07-01"]]
+  },
+  {
+    "id": "h02",
+    "question": "Calculate the average product price for each category.",
+    "sql": "SELECT category, AVG(unit_price) FROM products GROUP BY category ORDER BY category",
+    "expected_rows": [["Home", 28.0], ["Outdoors", 29.375], ["Stationery", 6.375]]
+  },
+  {
+    "id": "h03",
+    "question": "How many units were ordered for each product? Return product name and total quantity.",
+    "sql": "SELECT p.product_name, SUM(o.quantity) FROM products p JOIN orders o ON o.product_id = p.product_id GROUP BY p.product_name ORDER BY p.product_name",
+    "expected_rows": [["Backpack", 3], ["Desk Lamp", 3], ["Notebook", 10], ["Pen Set", 5], ["Water Bottle", 3]]
+  },
+  {
+    "id": "h04",
+    "question": "List customers who have at least one cancelled order, returning their names only.",
+    "sql": "SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.status = 'cancelled' ORDER BY c.full_name",
+    "expected_rows": [["Ravi Shah"]]
+  },
+  {
+    "id": "h05",
+    "question": "How many orders were placed between July 1 and July 10, 2025 inclusive?",
+    "sql": "SELECT COUNT(*) FROM orders WHERE ordered_at >= DATE '2025-07-01' AND ordered_at < DATE '2025-07-11'",
+    "expected_rows": [[5]]
+  }
+]
