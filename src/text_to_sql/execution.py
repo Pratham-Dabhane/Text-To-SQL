@@ -8,6 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 from text_to_sql.audit import AuditLog
+from text_to_sql.sanity import check_result_sanity
 from text_to_sql.sql_guardrails import apply_row_limit, reject_large_estimate
 
 
@@ -34,6 +35,8 @@ def execute_read_only(
             result = connection.execute(text(guarded_sql))
             rows = [dict(row._mapping) for row in result]
 
+    sanity = check_result_sanity(rows, list(result.keys()))
+
     if audit_log is not None:
         audit_log.record(guarded_sql, True)
 
@@ -42,4 +45,5 @@ def execute_read_only(
         "columns": list(result.keys()),
         "rows": rows,
         "row_count": len(rows),
+        "sanity": sanity,
     }
