@@ -79,9 +79,9 @@
   },
   {
     "id": "h14",
-    "question": "What is the most expensive product?",
+    "question": "What is the most expensive product? Return its name and price.",
     "sql": "SELECT product_name FROM products ORDER BY unit_price DESC LIMIT 1",
-    "expected_rows": [["Backpack"]]
+    "expected_rows": [["Backpack", 42.0]]
   },
   {
     "id": "h15",
@@ -103,7 +103,7 @@
   },
   {
     "id": "h18",
-    "question": "List products priced below 20, cheapest first.",
+    "question": "List all products priced below 20, returning each name and price, cheapest first.",
     "sql": "SELECT product_name, unit_price FROM products WHERE unit_price < 20 ORDER BY unit_price",
     "expected_rows": [["Notebook", 4.5], ["Pen Set", 8.25], ["Water Bottle", 16.75]]
   },
@@ -117,6 +117,6 @@
     "id": "h20",
     "question": "What is the delivered revenue from Notebook orders?",
     "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered' AND p.product_name = 'Notebook'",
-    "expected_rows": [[36.0]]
+    "expected_rows": [[45.0]]
   }
 ]
