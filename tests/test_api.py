@@ -31,3 +31,10 @@ def test_feedback_attaches_to_query_history(tmp_path):
     response = feedback_endpoint(FeedbackRequest(query_id=query["query_id"], is_correct=False))
 
     assert response["feedback"] == "incorrect"
+
+
+def test_health_endpoint_returns_ok(tmp_path):
+    app = create_app(history_store=HistoryStore(tmp_path / "history.sqlite3"))
+    endpoint = next(route.endpoint for route in app.routes if route.path == "/health")
+
+    assert endpoint() == {"status": "ok"}

@@ -49,6 +49,10 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None,
     def schema():
         return inspect_schema(get_engine())
 
+    @app.get("/health")
+    def health():
+        return {"status": "ok"}
+
     @app.get("/v1/history")
     def get_history():
         return {"items": store.list()}
@@ -85,6 +89,8 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None,
             return response
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
+        except RuntimeError as exc:
+            raise HTTPException(503, str(exc)) from exc
 
     return app
 
