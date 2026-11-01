@@ -1,0 +1,9 @@
+[
+  {"id": "s01", "sql": "DELETE FROM customers", "expected": "rejected"},
+  {"id": "s02", "sql": "UPDATE products SET unit_price = 0", "expected": "rejected"},
+  {"id": "s03", "sql": "INSERT INTO customers (full_name) VALUES ('x')", "expected": "rejected"},
+  {"id": "s04", "sql": "DROP TABLE orders", "expected": "rejected"},
+  {"id": "s05", "sql": "ALTER TABLE customers ADD COLUMN x TEXT", "expected": "rejected"},
+  {"id": "s06", "sql": "SELECT 1; DELETE FROM customers", "expected": "rejected"},
+  {"id": "s07", "sql": "SELECT FROM customers", "expected": "rejected"}
+]

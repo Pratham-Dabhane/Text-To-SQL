@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 import sqlglot
 from sqlglot import exp
 from sqlglot.errors import ParseError
@@ -11,6 +13,8 @@ def validate_read_only_sql(sql: str) -> str:
     """Return normalized SQL or raise ValueError if it is not one read query."""
     if not sql.strip():
         raise ValueError("SQL must not be blank.")
+    if re.search(r"\bSELECT\s+FROM\b", sql, re.IGNORECASE):
+        raise ValueError("Invalid PostgreSQL SQL: SELECT requires columns.")
 
     try:
         statements = sqlglot.parse(sql, read="postgres")
