@@ -81,3 +81,32 @@ def evaluate_model(
         "execution_accuracy": correct_count / len(results) if results else 0.0,
         "results": results,
     }
+
+
+def evaluate_repeated(
+    engine: Engine,
+    dataset_path: str | Path,
+    *,
+    runs: int = 3,
+    client: OllamaClient | None = None,
+) -> dict[str, Any]:
+    """Run evaluation repeatedly to expose local-model variability."""
+    if runs < 1:
+        raise ValueError("runs must be at least 1")
+    scores = []
+    for run_number in range(1, runs + 1):
+        result = evaluate_model(engine, dataset_path, client=client)
+        scores.append({
+            "run": run_number,
+            "correct": result["correct"],
+            "total": result["total"],
+            "execution_accuracy": result["execution_accuracy"],
+            "failed_ids": [item["id"] for item in result["results"] if not item["correct"]],
+        })
+    accuracies = [score["execution_accuracy"] for score in scores]
+    return {
+        "runs": scores,
+        "mean_execution_accuracy": sum(accuracies) / len(accuracies),
+        "min_execution_accuracy": min(accuracies),
+        "max_execution_accuracy": max(accuracies),
+    }
