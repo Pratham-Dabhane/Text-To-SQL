@@ -18,6 +18,7 @@ def test_prompt_includes_question_schema_and_rules():
     assert "Select exactly the fields requested." in prompt
     assert "Distinguish product_name from category" in prompt
     assert "Do not add LIMIT unless" in prompt
+    assert "Preserve the exact filter concept" in prompt
 
 
 @pytest.mark.parametrize("question,schema_text", [("", "TABLE customers"), ("List customers", "")])

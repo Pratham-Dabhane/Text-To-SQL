@@ -24,7 +24,10 @@ Question: What is the most expensive product? Return its name and price.
 SQL: SELECT product_name, unit_price FROM products ORDER BY unit_price DESC LIMIT 1
 
 Question: What is the total quantity ordered for Stationery products?
-SQL: SELECT SUM(o.quantity) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.category = 'Stationery'"""
+SQL: SELECT SUM(o.quantity) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.category = 'Stationery'
+
+Question: What is the delivered revenue from Notebook orders?
+SQL: SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.product_name = 'Notebook' AND o.status = 'delivered'"""
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Select exactly the fields requested. Distinguish product_name from category:
@@ -32,6 +35,9 @@ category is a products column and values such as 'Stationery' belong in
 filters on products.category. Use the requested aggregate and preserve the
 requested level of detail. Return SQL only.
 Do not add LIMIT unless the question asks for one/top/bottom result or a row limit.
+If the question says ordered, sorted, cheapest, or newest, include the matching
+ORDER BY clause. Preserve the exact filter concept: a product name filters
+products.product_name, while a category filters products.category.
 Use only tables and columns listed in the schema.
 Do not use INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, or multiple statements.
 
