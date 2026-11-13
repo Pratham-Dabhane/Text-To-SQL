@@ -80,7 +80,7 @@
   {
     "id": "h14",
     "question": "What is the most expensive product? Return its name and price.",
-    "sql": "SELECT product_name FROM products ORDER BY unit_price DESC LIMIT 1",
+    "sql": "SELECT product_name, unit_price FROM products ORDER BY unit_price DESC LIMIT 1",
     "expected_rows": [["Backpack", 42.0]]
   },
   {
@@ -118,5 +118,125 @@
     "question": "What is the delivered revenue from Notebook orders?",
     "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered' AND p.product_name = 'Notebook'",
     "expected_rows": [[45.0]]
+  },
+  {
+    "id": "h21",
+    "question": "List the names and emails of customers in Mumbai, ordered by name.",
+    "sql": "SELECT full_name, email FROM customers WHERE city = 'Mumbai' ORDER BY full_name",
+    "expected_rows": [["Asha Patel", "asha@example.test"], ["Noah Sen", "noah@example.test"]]
+  },
+  {
+    "id": "h22",
+    "question": "How many delivered orders are there?",
+    "sql": "SELECT COUNT(*) FROM orders WHERE status = 'delivered'",
+    "expected_rows": [[6]]
+  },
+  {
+    "id": "h23",
+    "question": "List all product categories alphabetically.",
+    "sql": "SELECT DISTINCT category FROM products ORDER BY category",
+    "expected_rows": [["Home"], ["Outdoors"], ["Stationery"]]
+  },
+  {
+    "id": "h24",
+    "question": "List pending order IDs and dates, oldest first.",
+    "sql": "SELECT order_id, ordered_at FROM orders WHERE status = 'pending' ORDER BY ordered_at",
+    "expected_rows": [[6, "2025-07-12"], [10, "2025-07-22"]]
+  },
+  {
+    "id": "h25",
+    "question": "What is the average price of Stationery products?",
+    "sql": "SELECT AVG(unit_price) FROM products WHERE category = 'Stationery'",
+    "expected_rows": [[6.375]]
+  },
+  {
+    "id": "h26",
+    "question": "What is the total quantity across all orders?",
+    "sql": "SELECT SUM(quantity) FROM orders",
+    "expected_rows": [[24]]
+  },
+  {
+    "id": "h27",
+    "question": "Show delivered revenue for each product category, ordered by category.",
+    "sql": "SELECT p.category, SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'delivered' GROUP BY p.category ORDER BY p.category",
+    "expected_rows": [["Home", 56.0], ["Outdoors", 33.5], ["Stationery", 78.0]]
+  },
+  {
+    "id": "h28",
+    "question": "List customers who ordered Backpack, returning names only.",
+    "sql": "SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id JOIN products p ON p.product_id = o.product_id WHERE p.product_name = 'Backpack' ORDER BY c.full_name",
+    "expected_rows": [["Mina Das"], ["Noah Sen"]]
+  },
+  {
+    "id": "h29",
+    "question": "For each customer with a pending order, return the name and pending order count.",
+    "sql": "SELECT c.full_name, COUNT(o.order_id) FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.status = 'pending' GROUP BY c.full_name ORDER BY c.full_name",
+    "expected_rows": [["Mina Das", 1], ["Noah Sen", 1]]
+  },
+  {
+    "id": "h30",
+    "question": "List order IDs placed on or after July 20, 2025.",
+    "sql": "SELECT order_id FROM orders WHERE ordered_at >= DATE '2025-07-20' ORDER BY order_id",
+    "expected_rows": [[9], [10], [11]]
+  },
+  {
+    "id": "h31",
+    "question": "How many products cost at least 20?",
+    "sql": "SELECT COUNT(*) FROM products WHERE unit_price >= 20",
+    "expected_rows": [[2]]
+  },
+  {
+    "id": "h32",
+    "question": "Who is the newest customer? Return name and creation date.",
+    "sql": "SELECT full_name, created_at FROM customers ORDER BY created_at DESC LIMIT 1",
+    "expected_rows": [["Noah Sen", "2025-06-21"]]
+  },
+  {
+    "id": "h33",
+    "question": "What is the total quantity in cancelled orders?",
+    "sql": "SELECT SUM(quantity) FROM orders WHERE status = 'cancelled'",
+    "expected_rows": [[1]]
+  },
+  {
+    "id": "h34",
+    "question": "Count orders for each status, ordered by status.",
+    "sql": "SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status",
+    "expected_rows": [["cancelled", 1], ["delivered", 6], ["pending", 2], ["shipped", 2]]
+  },
+  {
+    "id": "h35",
+    "question": "List product names and prices from 5 through 20, ordered by price.",
+    "sql": "SELECT product_name, unit_price FROM products WHERE unit_price >= 5 AND unit_price <= 20 ORDER BY unit_price",
+    "expected_rows": [["Pen Set", 8.25], ["Water Bottle", 16.75]]
+  },
+  {
+    "id": "h36",
+    "question": "List customers who ordered before July 5, 2025, returning names only.",
+    "sql": "SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name",
+    "expected_rows": [["Asha Patel"], ["Ravi Shah"]]
+  },
+  {
+    "id": "h37",
+    "question": "What is the total quantity in delivered orders?",
+    "sql": "SELECT SUM(quantity) FROM orders WHERE status = 'delivered'",
+    "expected_rows": [[18]]
+  },
+  {
+    "id": "h38",
+    "question": "What is the revenue from all Stationery orders?",
+    "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.category = 'Stationery'",
+    "expected_rows": [[86.25]]
+  },
+  {
+    "id": "h39",
+    "question": "List customers created after February 28, 2025, ordered by creation date.",
+    "sql": "SELECT full_name, created_at FROM customers WHERE created_at > DATE '2025-02-28' ORDER BY created_at",
+    "expected_rows": [["Mina Das", "2025-03-02"], ["Kabir Rao", "2025-04-18"], ["Leela Nair", "2025-05-06"], ["Noah Sen", "2025-06-21"]]
+  },
+  {
+    "id": "h40",
+    "question": "What is the sum of all product unit prices?",
+    "sql": "SELECT SUM(unit_price) FROM products",
+    "expected_rows": [[99.5]]
   }
 ]

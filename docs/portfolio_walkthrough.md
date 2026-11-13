@@ -32,7 +32,7 @@ last line of defense if application validation has a defect.
 
 ## Evaluation evidence
 
-The project has 10 golden cases and 20 holdout cases. Golden cases help verify
+The project has 10 golden cases and 40 holdout cases. Golden cases help verify
 the evaluation pipeline. Holdout cases test questions outside the initial
 manual SQL exercises.
 
@@ -55,6 +55,6 @@ does not establish general model accuracy or a confidence probability.
 - The test database is intentionally small and fictional.
 - The API key is shared, rather than a full user identity system.
 - Rate limiting is stored in API memory and does not coordinate across replicas.
-- The evaluation suite needs 50+ cases and broader schemas for stronger evidence.
+- The project has 50 cases but needs broader schemas for stronger evidence.
 - Alignment judgments are review signals only; execution against expected data is
   the actual correctness evidence used here.

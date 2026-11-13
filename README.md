@@ -103,8 +103,9 @@ python -m pytest -q
 The project includes database tests, SQL safety tests, golden execution cases,
 holdout cases, ambiguity cases, and mocked local-model tests.
 
-The latest measured model results were 10/10 on the 10-question golden set and
-20/20 on each of three repeated runs of the 20-question holdout set. These are
+The project has 10 golden cases and 40 holdout cases, for 50 evaluation cases
+total. The earlier measured model result was 20/20 on each of three repeated
+runs of the original 20-question holdout set. These are
 measurements for this small local dataset and model configuration, not general
 production accuracy claims.
 
@@ -125,8 +126,8 @@ PostgreSQL connection used for generated queries, which remains read-only.
 
 The project uses a shared API-key check and in-memory per-client rate limit;
 it does not provide user accounts, durable distributed rate limiting, or a
-50+ case evaluation suite. LLM alignment judgments are review signals and are
-not probabilities or proof of correctness.
+broader multi-schema evaluation suite. LLM alignment judgments are review
+signals and are not probabilities or proof of correctness.
 
 See [docs/demo_checklist.md](docs/demo_checklist.md) for a short end-to-end demo.
 See [docs/portfolio_walkthrough.md](docs/portfolio_walkthrough.md) for an
