@@ -42,7 +42,10 @@ Question: Count orders for each status, ordered by status.
 SQL: SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status
 
 Question: List names of customers whose orders were placed before July 5, 2025.
-SQL: SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name"""
+SQL: SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name
+
+Question: Return every product priced below 20 with its name and price, cheapest first.
+SQL: SELECT product_name, unit_price FROM products WHERE unit_price < 20 ORDER BY unit_price"""
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Select exactly the fields requested. Distinguish product_name from category:

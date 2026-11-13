@@ -103,7 +103,7 @@
   },
   {
     "id": "h18",
-    "question": "List all products priced below 20, returning each name and price, cheapest first.",
+    "question": "Return every product priced below 20 with its name and price, cheapest first.",
     "sql": "SELECT product_name, unit_price FROM products WHERE unit_price < 20 ORDER BY unit_price",
     "expected_rows": [["Notebook", 4.5], ["Pen Set", 8.25], ["Water Bottle", 16.75]]
   },
