@@ -9,6 +9,8 @@ import streamlit as st
 
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
+API_KEY = os.getenv("API_KEY")
+HEADERS = {"X-API-Key": API_KEY} if API_KEY else {}
 
 st.set_page_config(page_title="Safe Text-to-SQL", layout="wide")
 st.title("Safe Text-to-SQL")
@@ -18,7 +20,7 @@ question = st.text_input("Ask a question", placeholder="List customers in Mumbai
 if st.button("Run query", type="primary") and question.strip():
     try:
         response = requests.post(
-            f"{API_URL}/v1/query", json={"question": question}, timeout=120
+            f"{API_URL}/v1/query", json={"question": question}, headers=HEADERS, timeout=120
         )
         response.raise_for_status()
         payload = response.json()
@@ -47,7 +49,7 @@ if st.session_state.get("last_query_id"):
                 feedback = requests.post(
                     f"{API_URL}/v1/feedback",
                     json={"query_id": st.session_state["last_query_id"], "is_correct": value},
-                    timeout=10,
+                    headers=HEADERS, timeout=10,
                 )
                 feedback.raise_for_status()
                 st.success("Feedback saved.")
@@ -56,7 +58,7 @@ if st.session_state.get("last_query_id"):
 
 if st.checkbox("Show query history"):
     try:
-        history = requests.get(f"{API_URL}/v1/history", timeout=10).json()
+        history = requests.get(f"{API_URL}/v1/history", headers=HEADERS, timeout=10).json()
         st.json(history)
     except requests.RequestException as exc:
         st.error(f"Could not load history: {exc}")

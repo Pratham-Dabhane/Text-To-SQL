@@ -69,6 +69,10 @@ The Docker API reaches Ollama on Windows through
 `host.docker.internal:11434`. Start Ollama before sending generated-query
 requests.
 
+Optional API protection can be enabled with `API_KEY` and
+`RATE_LIMIT_PER_MINUTE` environment variables. Streamlit forwards `API_KEY`
+automatically. Leave `API_KEY` unset for the local learning setup.
+
 Terminal 1:
 
 ```powershell

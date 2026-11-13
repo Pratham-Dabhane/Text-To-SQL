@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import os
+import time
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
@@ -35,6 +37,23 @@ def create_app(engine: Engine | None = None, client: OllamaClient | None = None,
     database_engine = engine
     model_client = client or OllamaClient()
     store = history_store or HistoryStore(os.getenv("HISTORY_DB_PATH", "data/history.sqlite3"))
+    api_key = os.getenv("API_KEY")
+    limit = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
+    requests_by_client: dict[str, list[float]] = {}
+
+    @app.middleware("http")
+    async def protect_api(request, call_next):
+        if request.url.path.startswith("/v1/"):
+            if api_key and request.headers.get("X-API-Key") != api_key:
+                return JSONResponse({"detail": "Invalid API key."}, status_code=401)
+            now = time.monotonic()
+            client_id = request.client.host if request.client else "unknown"
+            recent = [stamp for stamp in requests_by_client.get(client_id, []) if now - stamp < 60]
+            if len(recent) >= limit:
+                return JSONResponse({"detail": "Rate limit exceeded."}, status_code=429)
+            recent.append(now)
+            requests_by_client[client_id] = recent
+        return await call_next(request)
 
     def get_engine() -> Engine:
         nonlocal database_engine
