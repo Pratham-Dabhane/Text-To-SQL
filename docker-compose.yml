@@ -22,6 +22,8 @@ services:
       DATABASE_URL: postgresql+psycopg://text_to_sql_reader:reader_dev_password@postgres:5432/text_to_sql_learning
       HISTORY_DB_PATH: /app/data/history.sqlite3
       OLLAMA_URL: http://host.docker.internal:11434
+      API_KEY: ${API_KEY:-}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-60}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -42,6 +44,7 @@ services:
     command: streamlit run ui/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
     environment:
       API_URL: http://api:8000
+      API_KEY: ${API_KEY:-}
     ports:
       - "8501:8501"
     depends_on:
