@@ -94,8 +94,9 @@ The project includes database tests, SQL safety tests, golden execution cases,
 holdout cases, ambiguity cases, and mocked local-model tests.
 
 The latest measured model results were 10/10 on the 10-question golden set and
-10/10 on the 10-question holdout set. These are measurements for this small
-local dataset and model configuration, not general production accuracy claims.
+20/20 on each of three repeated runs of the 20-question holdout set. These are
+measurements for this small local dataset and model configuration, not general
+production accuracy claims.
 
 API history and feedback are stored in `data/history.sqlite3` by default. Set
 `HISTORY_DB_PATH` to choose another local path. This store is separate from the
