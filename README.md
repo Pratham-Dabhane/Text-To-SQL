@@ -129,3 +129,5 @@ it does not provide user accounts, durable distributed rate limiting, or a
 not probabilities or proof of correctness.
 
 See [docs/demo_checklist.md](docs/demo_checklist.md) for a short end-to-end demo.
+See [docs/portfolio_walkthrough.md](docs/portfolio_walkthrough.md) for an
+interview-ready explanation of the system.
