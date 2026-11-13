@@ -22,6 +22,8 @@ def test_prompt_includes_question_schema_and_rules():
     assert "A cheapest, lowest, highest" in prompt
     assert "use GROUP BY" in prompt
     assert "filter orders.status" in prompt
+    assert "exclude customers with zero matching orders" in prompt
+    assert "filters products.unit_price" in prompt
 
 
 @pytest.mark.parametrize("question,schema_text", [("", "TABLE customers"), ("List customers", "")])

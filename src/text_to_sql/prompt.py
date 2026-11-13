@@ -33,7 +33,13 @@ Question: What is the average quantity per delivered order?
 SQL: SELECT AVG(quantity) FROM orders WHERE status = 'delivered'
 
 Question: How many customers are in each city?
-SQL: SELECT city, COUNT(*) FROM customers GROUP BY city ORDER BY city"""
+SQL: SELECT city, COUNT(*) FROM customers GROUP BY city ORDER BY city
+
+Question: For each customer with a pending order, return the name and pending order count.
+SQL: SELECT c.full_name, COUNT(o.order_id) FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.status = 'pending' GROUP BY c.full_name ORDER BY c.full_name
+
+Question: Count orders for each status, ordered by status.
+SQL: SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status"""
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Select exactly the fields requested. Distinguish product_name from category:
@@ -48,6 +54,10 @@ products.product_name, while a category filters products.category.
 If the question asks for a value "for each" city, category, product, or customer,
 return the grouping column and use GROUP BY; do not use only COUNT(DISTINCT ...).
 When an order status is named, filter orders.status to that status.
+For "with a pending order", exclude customers with zero matching orders. When
+grouping, select the grouping column as well as the aggregate. A price range
+filters products.unit_price, and "ordered before/after" refers to
+orders.ordered_at; join customers through orders when customer names are needed.
 Use only tables and columns listed in the schema.
 Do not use INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, or multiple statements.
 

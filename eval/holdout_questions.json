@@ -229,7 +229,7 @@
   },
   {
     "id": "h39",
-    "question": "List customers created after February 28, 2025, ordered by creation date.",
+    "question": "List names and creation dates of customers created after February 28, 2025, ordered by creation date.",
     "sql": "SELECT full_name, created_at FROM customers WHERE created_at > DATE '2025-02-28' ORDER BY created_at",
     "expected_rows": [["Mina Das", "2025-03-02"], ["Kabir Rao", "2025-04-18"], ["Leela Nair", "2025-05-06"], ["Noah Sen", "2025-06-21"]]
   },
