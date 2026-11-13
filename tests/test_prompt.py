@@ -19,6 +19,9 @@ def test_prompt_includes_question_schema_and_rules():
     assert "Distinguish product_name from category" in prompt
     assert "Do not add LIMIT unless" in prompt
     assert "Preserve the exact filter concept" in prompt
+    assert "A cheapest, lowest, highest" in prompt
+    assert "use GROUP BY" in prompt
+    assert "filter orders.status" in prompt
 
 
 @pytest.mark.parametrize("question,schema_text", [("", "TABLE customers"), ("List customers", "")])
