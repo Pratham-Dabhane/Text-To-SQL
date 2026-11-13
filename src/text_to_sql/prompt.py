@@ -39,7 +39,10 @@ Question: For each customer with a pending order, return the name and pending or
 SQL: SELECT c.full_name, COUNT(o.order_id) FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.status = 'pending' GROUP BY c.full_name ORDER BY c.full_name
 
 Question: Count orders for each status, ordered by status.
-SQL: SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status"""
+SQL: SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status
+
+Question: List names of customers whose orders were placed before July 5, 2025.
+SQL: SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name"""
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Select exactly the fields requested. Distinguish product_name from category:

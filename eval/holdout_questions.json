@@ -211,7 +211,7 @@
   },
   {
     "id": "h36",
-    "question": "List customers who ordered before July 5, 2025, returning names only.",
+    "question": "List names of customers whose orders were placed before July 5, 2025.",
     "sql": "SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name",
     "expected_rows": [["Asha Patel"], ["Ravi Shah"]]
   },

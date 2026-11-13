@@ -24,6 +24,7 @@ def test_prompt_includes_question_schema_and_rules():
     assert "filter orders.status" in prompt
     assert "exclude customers with zero matching orders" in prompt
     assert "filters products.unit_price" in prompt
+    assert "whose orders were placed before July 5" in prompt
 
 
 @pytest.mark.parametrize("question,schema_text", [("", "TABLE customers"), ("List customers", "")])
