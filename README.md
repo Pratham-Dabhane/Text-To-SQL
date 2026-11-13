@@ -73,6 +73,12 @@ Optional API protection can be enabled with `API_KEY` and
 `RATE_LIMIT_PER_MINUTE` environment variables. Streamlit forwards `API_KEY`
 automatically. Leave `API_KEY` unset for the local learning setup.
 
+To run a quick Docker verification after startup:
+
+```powershell
+./scripts/docker_smoke_test.ps1
+```
+
 Terminal 1:
 
 ```powershell
@@ -117,7 +123,9 @@ PostgreSQL connection used for generated queries, which remains read-only.
 
 ## Known limitations
 
-The project does not yet provide user authentication, Docker Compose deployment,
-a 50+ case evaluation suite,
-or a validated hallucination-detection metric. LLM alignment judgments are
-review signals and are not probabilities or proof of correctness.
+The project uses a shared API-key check and in-memory per-client rate limit;
+it does not provide user accounts, durable distributed rate limiting, or a
+50+ case evaluation suite. LLM alignment judgments are review signals and are
+not probabilities or proof of correctness.
+
+See [docs/demo_checklist.md](docs/demo_checklist.md) for a short end-to-end demo.
