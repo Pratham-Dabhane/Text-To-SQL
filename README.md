@@ -1,5 +1,7 @@
 # Safe Text-to-SQL
 
+![Tests](https://github.com/Pratham-Dabhane/Text-To-SQL/actions/workflows/ci.yml/badge.svg)
+
 A free-first Text-to-SQL learning project. It uses a local PostgreSQL database,
 SQLAlchemy, Ollama, SQLGlot, FastAPI, Streamlit, and pytest.
 
