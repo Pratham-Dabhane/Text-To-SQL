@@ -103,6 +103,9 @@ python -m pytest -q
 The project includes database tests, SQL safety tests, golden execution cases,
 holdout cases, ambiguity cases, and mocked local-model tests.
 
+The latest full test run inside the Docker API environment against Docker
+PostgreSQL passed 58 tests.
+
 The project has 10 golden cases, 40 prompt-tuned regression cases, and 20
 independent cases. The regression suite checks known failure patterns. The
 independent set is reserved for measuring model behavior without adding its
