@@ -12,7 +12,7 @@ from eval.evaluator import result_shape_matches, rows_match
 from text_to_sql.alignment import judge_alignment
 from text_to_sql.execution import execute_read_only
 from text_to_sql.ollama_client import OllamaClient
-from text_to_sql.prompt import build_sql_generation_prompt
+from text_to_sql.generation import generate_validated_sql
 from text_to_sql.schema import inspect_schema
 from text_to_sql.schema_prompt import format_schema_for_prompt
 from text_to_sql.sql_response import clean_generated_sql
@@ -43,10 +43,9 @@ def evaluate_model(
     for case in cases:
         generated = None
         try:
-            prompt = build_sql_generation_prompt(case["question"], schema_text)
-            generated = model_client.generate(prompt)
-            cleaned = clean_generated_sql(generated)
-            validated = validate_read_only_sql(cleaned)
+            generated, validated = generate_validated_sql(
+                case["question"], schema_text, model_client
+            )
             output = execute_read_only(engine, validated)
             correct = rows_match(output["rows"], output["columns"], case["expected_rows"])
             result_record = {

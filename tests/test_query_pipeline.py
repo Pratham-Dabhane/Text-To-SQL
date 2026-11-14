@@ -1,15 +1,31 @@
-"""Tests for routing before LLM prompt construction."""
+"""Tests for the application query workflow."""
 
-from text_to_sql.query_pipeline import prepare_query
+from text_to_sql.history_store import HistoryStore
+from text_to_sql.query_pipeline import QueryPipeline
 
 
-def test_ambiguous_question_does_not_create_a_prompt():
-    result = prepare_query("What is our revenue?", "TABLE orders")
+class UnusedEngine:
+    pass
+
+
+class UnusedClient:
+    pass
+
+
+def test_ambiguous_question_does_not_contact_engine(tmp_path):
+    pipeline = QueryPipeline(
+        lambda: UnusedEngine(), UnusedClient(), HistoryStore(tmp_path / "history.sqlite3")
+    )
+
+    result = pipeline.run("What is our revenue?")
+
     assert result["action"] == "clarify"
-    assert "prompt" not in result
 
 
-def test_specific_question_creates_a_prompt():
-    result = prepare_query("List customers in Mumbai.", "TABLE customers")
-    assert result["action"] == "generate_sql"
-    assert "TABLE customers" in result["prompt"]
+def test_early_decision_is_persisted(tmp_path):
+    store = HistoryStore(tmp_path / "history.sqlite3")
+    pipeline = QueryPipeline(lambda: UnusedEngine(), UnusedClient(), store)
+
+    result = pipeline.run("What is our revenue?")
+
+    assert store.list()[0]["query_id"] == result["query_id"]
