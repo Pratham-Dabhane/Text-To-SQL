@@ -9,7 +9,8 @@
 7. Ask `What is our revenue?` and verify a clarification is returned.
 8. Mark a completed query Correct or Incorrect, then inspect `/v1/history`.
 9. Run `python -m pytest -q` with `DATABASE_URL` set to include database tests.
-10. Run the repeated holdout evaluation and report its mean, minimum, and maximum.
+10. Run the repeated independent evaluation and report its mean, minimum, and maximum.
 
-The current repeated holdout measurement is 20/20 for three runs on this small
-local dataset. It is evidence for this configuration, not a general accuracy claim.
+The current repeated independent measurement is 20/20 for three runs on this
+small local dataset. It is evidence for this configuration, not a general
+accuracy claim.

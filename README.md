@@ -100,8 +100,8 @@ The API is at `http://localhost:8000`; the Streamlit UI is normally at
 python -m pytest -q
 ```
 
-The project includes database tests, SQL safety tests, golden execution cases,
-holdout cases, ambiguity cases, and mocked local-model tests.
+The project includes database tests, SQL safety tests, golden cases, regression
+cases, independent cases, ambiguity cases, and mocked local-model tests.
 
 The latest full test run inside the Docker API environment against Docker
 PostgreSQL passed 58 tests.

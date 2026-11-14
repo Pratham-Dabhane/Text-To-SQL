@@ -16,8 +16,8 @@ def test_golden_dataset_has_ten_unique_cases():
         assert isinstance(case["expected_rows"], list)
 
 
-def test_holdout_dataset_has_unseen_cases():
-    path = Path(__file__).parents[1] / "eval" / "holdout_questions.json"
+def test_regression_dataset_has_known_cases():
+    path = Path(__file__).parents[1] / "eval" / "regression_questions.json"
     cases = json.loads(path.read_text(encoding="utf-8"))
 
     assert len(cases) == 40
