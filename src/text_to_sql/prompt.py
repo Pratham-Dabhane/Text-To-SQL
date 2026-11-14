@@ -35,6 +35,8 @@ belongs to the table or alias that supplies it. If a requested field is in anoth
 table, join through the listed foreign-key relationship instead of inventing a
 same-named column. For totals grouped by an entity name, select that name and
 join the entity table before grouping or ordering by it.
+For many-to-many questions, join through the bridge table using both listed
+foreign keys before selecting or filtering the related entity.
 Do not use INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, or multiple statements.
 
 <examples>
