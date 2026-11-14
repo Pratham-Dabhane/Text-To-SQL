@@ -30,6 +30,11 @@ grouping, select the grouping column as well as the aggregate. A price range
 filters products.unit_price, and "ordered before/after" refers to
 orders.ordered_at; join customers through orders when customer names are needed.
 Use only tables and columns listed in the schema.
+Before writing SQL, verify every selected, filtered, grouped, and ordered column
+belongs to the table or alias that supplies it. If a requested field is in another
+table, join through the listed foreign-key relationship instead of inventing a
+same-named column. For totals grouped by an entity name, select that name and
+join the entity table before grouping or ordering by it.
 Do not use INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, or multiple statements.
 
 <examples>
