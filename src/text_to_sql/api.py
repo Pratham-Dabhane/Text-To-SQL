@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import os
-import time
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
@@ -21,6 +19,8 @@ from text_to_sql.sql_validation import validate_read_only_sql
 from text_to_sql.query_pipeline import prepare_query
 from text_to_sql.question_router import route_question
 from text_to_sql.history_store import HistoryStore
+from text_to_sql.security import ApiSecurity
+from text_to_sql.settings import Settings
 
 
 class QueryRequest(BaseModel):
@@ -32,33 +32,33 @@ class FeedbackRequest(BaseModel):
     is_correct: bool
 
 
-def create_app(engine: Engine | None = None, client: OllamaClient | None = None, history_store: HistoryStore | None = None) -> FastAPI:
+def create_app(
+    engine: Engine | None = None,
+    client: OllamaClient | None = None,
+    history_store: HistoryStore | None = None,
+    settings: Settings | None = None,
+) -> FastAPI:
     app = FastAPI(title="Safe Text-to-SQL")
+    app_settings = settings or Settings.from_environment()
     database_engine = engine
-    model_client = client or OllamaClient()
-    store = history_store or HistoryStore(os.getenv("HISTORY_DB_PATH", "data/history.sqlite3"))
-    api_key = os.getenv("API_KEY")
-    limit = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
-    requests_by_client: dict[str, list[float]] = {}
+    model_client = client or OllamaClient(base_url=app_settings.ollama_url)
+    store = history_store or HistoryStore(app_settings.history_db_path)
+    security = ApiSecurity(app_settings.api_key, app_settings.rate_limit_per_minute)
 
     @app.middleware("http")
     async def protect_api(request, call_next):
         if request.url.path.startswith("/v1/"):
-            if api_key and request.headers.get("X-API-Key") != api_key:
-                return JSONResponse({"detail": "Invalid API key."}, status_code=401)
-            now = time.monotonic()
             client_id = request.client.host if request.client else "unknown"
-            recent = [stamp for stamp in requests_by_client.get(client_id, []) if now - stamp < 60]
-            if len(recent) >= limit:
-                return JSONResponse({"detail": "Rate limit exceeded."}, status_code=429)
-            recent.append(now)
-            requests_by_client[client_id] = recent
+            rejection = security.reject_reason(client_id, request.headers.get("X-API-Key"))
+            if rejection:
+                status_code, detail = rejection
+                return JSONResponse({"detail": detail}, status_code=status_code)
         return await call_next(request)
 
     def get_engine() -> Engine:
         nonlocal database_engine
         if database_engine is None:
-            database_url = os.getenv("DATABASE_URL")
+            database_url = app_settings.database_url
             if not database_url:
                 raise HTTPException(500, "DATABASE_URL is not configured.")
             database_engine = create_engine(database_url)
