@@ -106,7 +106,8 @@ holdout cases, ambiguity cases, and mocked local-model tests.
 The project has 10 golden cases, 40 prompt-tuned regression cases, and 20
 independent cases. The regression suite checks known failure patterns. The
 independent set is reserved for measuring model behavior without adding its
-questions to the prompt. These are
+questions to the prompt. The independent set measured 20/20 on each of three
+runs with `llama3.2:3b`. These are
 measurements for this small local dataset and model configuration, not general
 production accuracy claims.
 

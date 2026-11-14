@@ -37,11 +37,11 @@ independent cases. Golden cases help verify the evaluation pipeline. Regression
 cases prevent known failure patterns from returning. Independent cases are not
 copied into the prompt and provide the more meaningful model measurement.
 
-The earlier regression result was 40/40 on each of three runs with the local
+The regression result was 40/40 on each of three runs with the local
 `llama3.2:3b` configuration. This is not an independent accuracy claim because
-the prompt was tuned using these cases. The independent suite must be measured
-separately. Neither result establishes general model accuracy or a confidence
-probability.
+the prompt was tuned using these cases. The independent suite measured 20/20
+on each of three runs. It is still a small, single-schema result and does not
+establish general model accuracy or a confidence probability.
 
 ## Demo flow
 
