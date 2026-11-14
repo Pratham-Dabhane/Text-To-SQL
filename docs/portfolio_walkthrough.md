@@ -32,13 +32,16 @@ last line of defense if application validation has a defect.
 
 ## Evaluation evidence
 
-The project has 10 golden cases and 40 holdout cases. Golden cases help verify
-the evaluation pipeline. Holdout cases test questions outside the initial
-manual SQL exercises.
+The project has 10 golden cases, 40 prompt-tuned regression cases, and 20
+independent cases. Golden cases help verify the evaluation pipeline. Regression
+cases prevent known failure patterns from returning. Independent cases are not
+copied into the prompt and provide the more meaningful model measurement.
 
-The latest measured holdout result was 20/20 on each of three runs with the
-local `llama3.2:3b` configuration. This is a small, fixed dataset result. It
-does not establish general model accuracy or a confidence probability.
+The earlier regression result was 40/40 on each of three runs with the local
+`llama3.2:3b` configuration. This is not an independent accuracy claim because
+the prompt was tuned using these cases. The independent suite must be measured
+separately. Neither result establishes general model accuracy or a confidence
+probability.
 
 ## Demo flow
 

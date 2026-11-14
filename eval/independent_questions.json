@@ -1,0 +1,122 @@
+[
+  {
+    "id": "i01",
+    "question": "Give the full name and email address for the customer in Pune.",
+    "sql": "SELECT full_name, email FROM customers WHERE city = 'Pune'",
+    "expected_rows": [["Ravi Shah", "ravi@example.test"]]
+  },
+  {
+    "id": "i02",
+    "question": "How many distinct customer cities exist?",
+    "sql": "SELECT COUNT(DISTINCT city) FROM customers",
+    "expected_rows": [[5]]
+  },
+  {
+    "id": "i03",
+    "question": "Show the identifiers and dates of shipped orders in chronological order.",
+    "sql": "SELECT order_id, ordered_at FROM orders WHERE status = 'shipped' ORDER BY ordered_at",
+    "expected_rows": [[2, "2025-07-03"], [8, "2025-07-18"]]
+  },
+  {
+    "id": "i04",
+    "question": "Calculate revenue from cancelled orders.",
+    "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'cancelled'",
+    "expected_rows": [[8.25]]
+  },
+  {
+    "id": "i05",
+    "question": "For every category, show the total units ordered, sorted by category.",
+    "sql": "SELECT p.category, SUM(o.quantity) FROM orders o JOIN products p ON p.product_id = o.product_id GROUP BY p.category ORDER BY p.category",
+    "expected_rows": [["Home", 3], ["Outdoors", 6], ["Stationery", 15]]
+  },
+  {
+    "id": "i06",
+    "question": "Which products cost more than 25? Return name and price alphabetically.",
+    "sql": "SELECT product_name, unit_price FROM products WHERE unit_price > 25 ORDER BY product_name",
+    "expected_rows": [["Backpack", 42.0], ["Desk Lamp", 28.0]]
+  },
+  {
+    "id": "i07",
+    "question": "Return the names of customers who bought a Water Bottle.",
+    "sql": "SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id JOIN products p ON p.product_id = o.product_id WHERE p.product_name = 'Water Bottle' ORDER BY c.full_name",
+    "expected_rows": [["Kabir Rao"], ["Ravi Shah"]]
+  },
+  {
+    "id": "i08",
+    "question": "How many orders were placed after July 10, 2025?",
+    "sql": "SELECT COUNT(*) FROM orders WHERE ordered_at > DATE '2025-07-10'",
+    "expected_rows": [[6]]
+  },
+  {
+    "id": "i09",
+    "question": "What date was the first order placed?",
+    "sql": "SELECT MIN(ordered_at) FROM orders",
+    "expected_rows": [["2025-07-01"]]
+  },
+  {
+    "id": "i10",
+    "question": "How many different products appear in orders?",
+    "sql": "SELECT COUNT(DISTINCT product_id) FROM orders",
+    "expected_rows": [[5]]
+  },
+  {
+    "id": "i11",
+    "question": "What is the total revenue for each customer across every order? Return the customer name and revenue ordered by name.",
+    "sql": "SELECT c.full_name, SUM(o.quantity * p.unit_price) FROM customers c JOIN orders o ON o.customer_id = c.customer_id JOIN products p ON p.product_id = o.product_id GROUP BY c.full_name ORDER BY c.full_name",
+    "expected_rows": [["Asha Patel", 41.5], ["Kabir Rao", 72.75], ["Leela Nair", 33.0], ["Mina Das", 64.5], ["Noah Sen", 93.0], ["Ravi Shah", 41.75]]
+  },
+  {
+    "id": "i12",
+    "question": "Calculate pending-order revenue.",
+    "sql": "SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE o.status = 'pending'",
+    "expected_rows": [[126.0]]
+  },
+  {
+    "id": "i13",
+    "question": "Who placed the earliest order? Return the name only.",
+    "sql": "SELECT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id ORDER BY o.ordered_at LIMIT 1",
+    "expected_rows": [["Asha Patel"]]
+  },
+  {
+    "id": "i14",
+    "question": "List order IDs whose quantity equals one.",
+    "sql": "SELECT order_id FROM orders WHERE quantity = 1 ORDER BY order_id",
+    "expected_rows": [[2], [4], [6], [8]]
+  },
+  {
+    "id": "i15",
+    "question": "What is the status of order number 9?",
+    "sql": "SELECT status FROM orders WHERE order_id = 9",
+    "expected_rows": [["delivered"]]
+  },
+  {
+    "id": "i16",
+    "question": "What is the average quantity for orders that were not delivered?",
+    "sql": "SELECT AVG(quantity) FROM orders WHERE status <> 'delivered'",
+    "expected_rows": [[1.2]]
+  },
+  {
+    "id": "i17",
+    "question": "List every customer city in reverse alphabetical order, without duplicates.",
+    "sql": "SELECT DISTINCT city FROM customers ORDER BY city DESC",
+    "expected_rows": [["Pune"], ["Mumbai"], ["Kolkata"], ["Kochi"], ["Bengaluru"]]
+  },
+  {
+    "id": "i18",
+    "question": "How many customers registered on or after March 1, 2025?",
+    "sql": "SELECT COUNT(*) FROM customers WHERE created_at >= DATE '2025-03-01'",
+    "expected_rows": [[4]]
+  },
+  {
+    "id": "i19",
+    "question": "Show products whose total ordered quantity exceeds three. Return product name and total quantity alphabetically.",
+    "sql": "SELECT p.product_name, SUM(o.quantity) FROM products p JOIN orders o ON o.product_id = p.product_id GROUP BY p.product_name HAVING SUM(o.quantity) > 3 ORDER BY p.product_name",
+    "expected_rows": [["Notebook", 10], ["Pen Set", 5]]
+  },
+  {
+    "id": "i20",
+    "question": "Return the total number of orders made by customers in Mumbai.",
+    "sql": "SELECT COUNT(*) FROM orders o JOIN customers c ON c.customer_id = o.customer_id WHERE c.city = 'Mumbai'",
+    "expected_rows": [[4]]
+  }
+]

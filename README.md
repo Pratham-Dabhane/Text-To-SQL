@@ -103,9 +103,10 @@ python -m pytest -q
 The project includes database tests, SQL safety tests, golden execution cases,
 holdout cases, ambiguity cases, and mocked local-model tests.
 
-The project has 10 golden cases and 40 holdout cases, for 50 evaluation cases
-total. The earlier measured model result was 20/20 on each of three repeated
-runs of the original 20-question holdout set. These are
+The project has 10 golden cases, 40 prompt-tuned regression cases, and 20
+independent cases. The regression suite checks known failure patterns. The
+independent set is reserved for measuring model behavior without adding its
+questions to the prompt. These are
 measurements for this small local dataset and model configuration, not general
 production accuracy claims.
 
