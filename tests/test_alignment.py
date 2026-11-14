@@ -2,7 +2,7 @@
 
 import pytest
 
-from text_to_sql.alignment import build_alignment_prompt, parse_alignment_response
+from eval.alignment import build_alignment_prompt, parse_alignment_response
 
 
 def test_alignment_prompt_contains_both_inputs():
@@ -27,6 +27,6 @@ def test_judge_alignment_uses_client():
             assert json_mode is True
             return '{"aligned": true, "explanation": "The query lists customers."}'
 
-    from text_to_sql.alignment import judge_alignment
+    from eval.alignment import judge_alignment
 
     assert judge_alignment("List customers", "SELECT full_name FROM customers", FakeClient())["aligned"]

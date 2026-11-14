@@ -9,7 +9,7 @@ from typing import Any, Callable
 from sqlalchemy.engine import Engine
 
 from eval.evaluator import result_shape_matches, rows_match
-from text_to_sql.alignment import judge_alignment
+from eval.alignment import judge_alignment
 from text_to_sql.execution import execute_read_only
 from text_to_sql.ollama_client import OllamaClient
 from text_to_sql.generation import generate_validated_sql

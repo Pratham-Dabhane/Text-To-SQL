@@ -1,6 +1,6 @@
 """Tests for multi-query validation routing hints."""
 
-from text_to_sql.complexity import needs_multi_query_validation
+from eval.complexity import needs_multi_query_validation
 
 
 def test_aggregation_is_complex():

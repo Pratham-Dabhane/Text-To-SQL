@@ -1,6 +1,6 @@
 """Tests for independent result comparison."""
 
-from text_to_sql.multi_query import compare_results
+from eval.multi_query import compare_results
 
 
 def test_matching_results_agree():
