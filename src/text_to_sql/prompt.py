@@ -1,5 +1,7 @@
 """Build consistent text-to-SQL prompts."""
 
+from text_to_sql.prompt_examples import format_examples
+
 
 def build_sql_generation_prompt(question: str, schema_text: str) -> str:
     """Combine a user question and approved schema text into one prompt."""
@@ -8,44 +10,7 @@ def build_sql_generation_prompt(question: str, schema_text: str) -> str:
     if not schema_text.strip():
         raise ValueError("Schema text must not be blank.")
 
-    examples = """Question: List every customer ordered by name.
-SQL: SELECT full_name FROM customers ORDER BY full_name
-
-Question: How many customers are from Mumbai?
-SQL: SELECT COUNT(*) FROM customers WHERE city = 'Mumbai'
-
-Question: What is delivered revenue for each product?
-SQL: SELECT p.product_name, COALESCE(SUM(o.quantity * p.unit_price), 0) AS revenue FROM products p LEFT JOIN orders o ON o.product_id = p.product_id AND o.status = 'delivered' GROUP BY p.product_name ORDER BY p.product_name
-
-Question: For each customer, return the customer's name and count of orders.
-SQL: SELECT c.full_name, COUNT(o.order_id) AS order_count FROM customers c LEFT JOIN orders o ON o.customer_id = c.customer_id GROUP BY c.full_name ORDER BY c.full_name
-
-Question: What is the most expensive product? Return its name and price.
-SQL: SELECT product_name, unit_price FROM products ORDER BY unit_price DESC LIMIT 1
-
-Question: What is the total quantity ordered for Stationery products?
-SQL: SELECT SUM(o.quantity) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.category = 'Stationery'
-
-Question: What is the delivered revenue from Notebook orders?
-SQL: SELECT SUM(o.quantity * p.unit_price) FROM orders o JOIN products p ON p.product_id = o.product_id WHERE p.product_name = 'Notebook' AND o.status = 'delivered'
-
-Question: What is the average quantity per delivered order?
-SQL: SELECT AVG(quantity) FROM orders WHERE status = 'delivered'
-
-Question: How many customers are in each city?
-SQL: SELECT city, COUNT(*) FROM customers GROUP BY city ORDER BY city
-
-Question: For each customer with a pending order, return the name and pending order count.
-SQL: SELECT c.full_name, COUNT(o.order_id) FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.status = 'pending' GROUP BY c.full_name ORDER BY c.full_name
-
-Question: Count orders for each status, ordered by status.
-SQL: SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY status
-
-Question: List names of customers whose orders were placed before July 5, 2025.
-SQL: SELECT DISTINCT c.full_name FROM customers c JOIN orders o ON o.customer_id = c.customer_id WHERE o.ordered_at < DATE '2025-07-05' ORDER BY c.full_name
-
-Question: Return every product priced below 20 with its name and price, cheapest first.
-SQL: SELECT product_name, unit_price FROM products WHERE unit_price < 20 ORDER BY unit_price"""
+    examples = format_examples()
 
     return f"""Generate one PostgreSQL SELECT query that answers the question.
 Select exactly the fields requested. Distinguish product_name from category:
