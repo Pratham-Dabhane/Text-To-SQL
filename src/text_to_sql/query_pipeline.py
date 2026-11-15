@@ -7,9 +7,10 @@ from typing import Any
 from uuid import uuid4
 
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SQLAlchemyError
 
 from text_to_sql.execution import execute_read_only
-from text_to_sql.generation import generate_validated_sql
+from text_to_sql.generation import generate_validated_sql, repair_validated_sql
 from text_to_sql.history_store import HistoryStore
 from text_to_sql.ollama_client import OllamaClient
 from text_to_sql.question_router import route_question
@@ -40,7 +41,14 @@ class QueryPipeline:
         _, validated_sql = generate_validated_sql(
             question, schema_text, self.client
         )
-        result = execute_read_only(engine, validated_sql)
+        try:
+            result = execute_read_only(engine, validated_sql)
+        except SQLAlchemyError as exc:
+            repaired_sql = repair_validated_sql(
+                question, schema_text, validated_sql, str(exc), self.client
+            )
+            result = execute_read_only(engine, repaired_sql)
+            validated_sql = repaired_sql
         return self._record(
             question,
             {
