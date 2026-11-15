@@ -7,12 +7,13 @@ from pathlib import Path
 from typing import Any, Callable
 
 from sqlalchemy.engine import Engine
+from sqlalchemy.exc import SQLAlchemyError
 
 from eval.evaluator import result_shape_matches, rows_match
 from eval.alignment import judge_alignment
 from text_to_sql.execution import execute_read_only
 from text_to_sql.ollama_client import OllamaClient
-from text_to_sql.generation import generate_validated_sql
+from text_to_sql.generation import generate_validated_sql, repair_validated_sql
 from text_to_sql.schema import inspect_schema
 from text_to_sql.schema_prompt import format_schema_for_prompt
 from text_to_sql.sql_response import clean_generated_sql
@@ -46,7 +47,13 @@ def evaluate_model(
             generated, validated = generate_validated_sql(
                 case["question"], schema_text, model_client
             )
-            output = execute_read_only(engine, validated)
+            try:
+                output = execute_read_only(engine, validated)
+            except SQLAlchemyError as exc:
+                validated = repair_validated_sql(
+                    case["question"], schema_text, validated, str(exc), model_client
+                )
+                output = execute_read_only(engine, validated)
             correct = rows_match(output["rows"], output["columns"], case["expected_rows"])
             result_record = {
                 "id": case["id"],
