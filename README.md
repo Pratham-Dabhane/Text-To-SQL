@@ -1,4 +1,4 @@
-# Safe Text-to-SQL
+#  🛡️🔍 TextQL: Safe Text-to-SQL with Guardrails
 
 ![Tests](https://github.com/Pratham-Dabhane/Text-To-SQL/actions/workflows/ci.yml/badge.svg)
 
