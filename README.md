@@ -117,6 +117,13 @@ runs with `llama3.2:3b`. These are
 measurements for this small local dataset and model configuration, not general
 production accuracy claims.
 
+The alternate-schema check in `eval/second_schema_questions.json` uses a
+separate departments/employees/projects database. Its deterministic reference
+queries score 10/10; the local Llama model scored 7/10 on each of three runs.
+This measures limited generalization to an unfamiliar schema, not global
+accuracy. The application and evaluator make one bounded repair attempt after
+a database error, then reapply the normal SQL guardrails.
+
 API history and feedback are stored in `data/history.sqlite3` by default. Set
 `HISTORY_DB_PATH` to choose another local path. This store is separate from the
 PostgreSQL connection used for generated queries, which remains read-only.
