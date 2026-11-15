@@ -58,6 +58,7 @@ establish general model accuracy or a confidence probability.
 - The test database is intentionally small and fictional.
 - The API key is shared, rather than a full user identity system.
 - Rate limiting is stored in API memory and does not coordinate across replicas.
-- The project has 50 cases but needs broader schemas for stronger evidence.
+- The project has 80 evaluation cases across the original and alternate schemas,
+  but still needs broader schemas for stronger evidence.
 - Alignment judgments are review signals only; execution against expected data is
   the actual correctness evidence used here.
